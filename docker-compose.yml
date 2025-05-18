@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    ports:
+      - "8080:80"
+    restart: always
+    # Add your backend API service below if you have one
+    # depends_on:
+    #   - api
+  
+  # Example API service (uncomment and adjust as needed)
+  # api:
+  #   image: your-api-image
+  #   ports:
+  #     - "3200:3200"
+  #   environment:
+  #     - ENV_VAR=value

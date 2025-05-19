@@ -96,6 +96,16 @@ export interface ReportActivityResponse {
   code: number;
 }
 
+export interface AppointmetSeederPayload {
+  latitude: number;
+  longitude: number;  
+}
+
+export interface AppointmentSeederResponse {
+  message: string;
+  code: number;
+}
+
 export type AppointmentStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
 
 export type LogType = 'CHECK-IN' | 'CHECK-OUT' | 'NOTE' ;

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Calendar, Clock, User, Filter } from 'lucide-react';
-import { getAppointments } from '../services/appointmentService';
+import { Calendar, Clock, User, Filter, Database, AlertTriangle } from 'lucide-react';
+import { getAppointments, appointmentSeeder } from '../services/appointmentService';
 import { Appointment } from '../types';
 import AppointmentCard from '../components/AppointmentCard';
-import { format } from 'date-fns';
+import moment from 'moment-timezone';
 
 type AppointmentStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
 
@@ -12,6 +12,11 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [statusFilter, setStatusFilter] = useState<AppointmentStatus>('SCHEDULED');
+
+  // Add new state for seeder modal
+  const [showSeederModal, setShowSeederModal] = useState(false);
+  const [isSeeding, setIsSeeding] = useState(false);
+  const [seederError, setSeederError] = useState('');  
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -35,18 +40,60 @@ const DashboardPage = () => {
     fetchAppointments();
   }, [statusFilter]);
 
-  // Get today's date
-  const today = new Date();
-  const todayFormatted = format(today, 'EEEE, MMMM d, yyyy');
+
+ // Add seeder handler
+ const handleSeedAppointments = async () => {
+  try {
+    setIsSeeding(true);
+    setSeederError('');
+
+    const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+
+    const payload = {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude
+    };
+
+    const response = await appointmentSeeder(payload);
+    if (response.code === 200) {
+      setShowSeederModal(false);
+      // Refresh appointments after seeding
+      const appointmentsResponse = await getAppointments(statusFilter);
+      if (appointmentsResponse.data) {
+        setAppointments(appointmentsResponse.data);
+      }
+    } else {
+      setSeederError(response.message);
+    }
+  } catch (err: any) {
+    console.error('Seeding failed:', err);
+    setSeederError(err.message || 'Failed to seed appointments');
+  } finally {
+    setIsSeeding(false);
+  }
+};  
+
 
   return (
     <div className="space-y-6 fade-in">
-      <div className="flex flex-col space-y-1">
-        <h1 className="text-2xl font-bold text-text-primary">Dashboard</h1>
-        <p className="text-text-secondary">
-          <Calendar size={16} className="inline mr-2" />
-          {todayFormatted}
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between space-y-2 md:space-y-0">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold text-text-primary">Dashboard</h1>
+          <p className="text-text-secondary">
+            <Calendar size={16} className="inline mr-2" />
+            {moment().format('dddd, MMMM D, YYYY')}
+          </p>
+        </div>
+        
+        <button
+          onClick={() => setShowSeederModal(true)}
+          className="btn btn-outline flex items-center"
+        >
+          <Database size={16} className="mr-2" />
+          Seed Appointments
+        </button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -121,6 +168,46 @@ const DashboardPage = () => {
           </div>
         )}
       </div>
+
+      {/* Seeder Modal */}
+      {showSeederModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-xl font-semibold mb-4">Seed Appointments</h3>
+            
+            {seederError && (
+              <div className="mb-4 p-3 bg-error/10 border border-error/30 rounded-md text-error text-sm flex items-start">
+                <AlertTriangle size={16} className="mr-2 mt-0.5 flex-shrink-0" />
+                <span>{seederError}</span>
+              </div>
+            )}
+            
+            <p className="text-text-secondary mb-6">
+              This will create sample appointments using your current location. Are you sure you want to proceed?
+            </p>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                className="btn btn-outline"
+                onClick={() => {
+                  setShowSeederModal(false);
+                  setSeederError('');
+                }}
+                disabled={isSeeding}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={handleSeedAppointments}
+                disabled={isSeeding}
+              >
+                {isSeeding ? 'Seeding...' : 'Confirm'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}      
     </div>
   );
 };

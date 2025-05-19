@@ -9,7 +9,7 @@ import AuthLayout from './layouts/AuthLayout';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import AppointmentDetailPage from './pages/AppointmentDetailPage';
-import NotFoundPage from './pages/NotFoundPage';
+import ComingSoonPage from './pages/ComingSoonPage';
 
 function App() {
   const { isAuthenticated, isInitialized } = useAuth();
@@ -51,7 +51,10 @@ function App() {
       </Route>
 
       {/* Not found */}
-      <Route path="*" element={<NotFoundPage />} />
+      {/* <Route path="*" element={<NotFoundPage />} /> */}
+
+      {/* Coming soon */}
+      <Route path="*" element={<ComingSoonPage />} />
     </Routes>
   );
 }

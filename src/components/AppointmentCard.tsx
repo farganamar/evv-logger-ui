@@ -1,7 +1,7 @@
 import { MapPin, Clock, ArrowRight } from 'lucide-react';
 import { Appointment } from '../types';
 import { Link } from 'react-router-dom';
-import { format, parseISO } from 'date-fns';
+import moment from 'moment-timezone';
 
 interface AppointmentCardProps {
   appointment: Appointment;
@@ -9,12 +9,10 @@ interface AppointmentCardProps {
 
 const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
   // Format dates and times
-  const startTime = parseISO(appointment.start_time);
-  const endTime = parseISO(appointment.end_time);
+  const dateFormatted = moment(appointment.start_time).format('ddd, MMM D, YYYY');
+  const startTimeFormatted = moment(appointment.start_time).format('h:mm A');
+  const endTimeFormatted = moment(appointment.end_time).format('h:mm A');
   
-  const dateFormatted = format(startTime, 'EEE, MMM d, yyyy');
-  const startTimeFormatted = format(startTime, 'h:mm a');
-  const endTimeFormatted = format(endTime, 'h:mm a');
   
   // Status badge color
   const getStatusColor = (status: string) => {
@@ -36,7 +34,7 @@ const AppointmentCard = ({ appointment }: AppointmentCardProps) => {
     <div className="card hover:shadow-md transition-shadow duration-300 slide-up">
       <div className="flex justify-between items-start">
         <div className="space-y-1">
-          <h3 className="font-semibold text-lg text-text-primary">Client #{appointment.client_id.slice(-4)}</h3>
+          <h3 className="font-semibold text-lg text-text-primary">Client #{appointment.client_detail.name}</h3>
           <p className="text-text-secondary text-sm flex items-center">
             <MapPin size={14} className="mr-1 text-text-muted" />
             {appointment.client_detail?.address || 'No address provided'}

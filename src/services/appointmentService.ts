@@ -1,5 +1,16 @@
 import api from './api';
-import { AppointmentDetailResponse, AppointmentListResponse, AppointmentLogsResponse, AppointmentStatus, CheckInOutResponse, CheckInOutPayload, ReportActivityPayload, ReportActivityResponse } from '../types';
+import { 
+  AppointmentDetailResponse, 
+  AppointmentListResponse, 
+  AppointmentLogsResponse, 
+  AppointmentStatus, 
+  CheckInOutResponse, 
+  CheckInOutPayload, 
+  ReportActivityPayload, 
+  ReportActivityResponse,
+  AppointmetSeederPayload,
+  AppointmentSeederResponse
+} from '../types';
 
 export const getAppointments = async (status?: AppointmentStatus): Promise<AppointmentListResponse> => {
   const params = status ? { status } : {};
@@ -30,6 +41,11 @@ export const checkOutAppointment = async (payload: CheckInOutPayload): Promise<C
 
 export const reportActivity = async (payload: ReportActivityPayload): Promise<ReportActivityResponse> => {
   const response = await api.post<ReportActivityResponse>('/v1/evv/appointment/note', payload);
+  return response.data;
+}
+
+export const appointmentSeeder = async (payload: AppointmetSeederPayload ): Promise<AppointmentSeederResponse> => {
+  const response = await api.post<AppointmentSeederResponse>('/v1/evv/seed/appointment', payload);
   return response.data;
 }
 

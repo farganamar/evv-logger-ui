@@ -59,6 +59,7 @@ npm run dev
 yarn dev
 ```
 
+
 5. **Build for production**
 ```bash
 npm run build
@@ -83,6 +84,8 @@ Or use Docker Compose:
 ```bash
 docker-compose up
 ```
+
+use johndoe or janedoe as username while login
 
 ## Project Structure
 

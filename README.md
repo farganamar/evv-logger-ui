@@ -100,6 +100,10 @@ evv-logger-ui/
 └── ...config files
 ```
 
+### Additional Features in the future
+1. Tech stack
+- implement refresh token
+
 ## Available Scripts
 
 - `npm run dev` - Start development server

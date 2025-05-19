@@ -1,5 +1,5 @@
 import api from './api';
-import { AppointmentDetailResponse, AppointmentListResponse, AppointmentLogsResponse, AppointmentStatus } from '../types';
+import { AppointmentDetailResponse, AppointmentListResponse, AppointmentLogsResponse, AppointmentStatus, CheckInOutResponse, CheckInOutPayload, ReportActivityPayload, ReportActivityResponse } from '../types';
 
 export const getAppointments = async (status?: AppointmentStatus): Promise<AppointmentListResponse> => {
   const params = status ? { status } : {};
@@ -16,3 +16,22 @@ export const getAppointmentLogs = async (appointmentId: string): Promise<Appoint
   const response = await api.get<AppointmentLogsResponse>(`/v1/evv/appointment/${appointmentId}/logs`);
   return response.data;
 };
+
+export const checkInAppointment = async (payload: CheckInOutPayload): Promise<CheckInOutResponse> => {
+  const response = await api.post<CheckInOutResponse>('/v1/evv/appointment/check-in', payload);
+  return response.data
+};
+
+export const checkOutAppointment = async (payload: CheckInOutPayload): Promise<CheckInOutResponse> => {
+  const response = await api.post<CheckInOutResponse>('/v1/evv/appointment/check-out', payload);
+  return response.data;
+};
+
+
+export const reportActivity = async (payload: ReportActivityPayload): Promise<ReportActivityResponse> => {
+  const response = await api.post<ReportActivityResponse>('/v1/evv/appointment/note', payload);
+  return response.data;
+}
+
+
+

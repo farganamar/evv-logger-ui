@@ -72,6 +72,30 @@ export interface AppointmentLogsResponse {
   code: number;
 }
 
+export interface CheckInOutPayload {
+  appointment_id: string;
+  latitude: number;
+  longitude: number;
+  note: string;
+  verification_code: string;
+}
+
+export interface ReportActivityPayload {
+  appointment_id: string;
+  type_of_note: string;
+  note: string;
+}
+
+export interface CheckInOutResponse {
+  message: string;
+  code: number;
+}
+
+export interface ReportActivityResponse {
+  message: string;
+  code: number;
+}
+
 export type AppointmentStatus = 'SCHEDULED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
 
 export type LogType = 'CHECK-IN' | 'CHECK-OUT' | 'NOTE' ;

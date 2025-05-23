@@ -120,8 +120,8 @@ const AppointmentDetailPage = () => {
       setLocationError('');
       
       // Use current location if available, otherwise fall back to client location
-      const latitude = currentLocation?.latitude ?? appointment?.client_detail.latitude;
-      const longitude = currentLocation?.longitude ?? appointment?.client_detail.longitude;
+      const latitude = currentLocation?.latitude
+      const longitude = currentLocation?.longitude
       
       // Verify we have location data
       if (!latitude || !longitude) {
